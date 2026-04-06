@@ -1,10 +1,25 @@
 import sys
 import argparse
 import os
+import urllib.parse
 import yt_dlp
 
+def limpar_url(url):
+    """Remove parâmetros de rastreamento conhecidos que podem interferir no download."""
+    try:
+        parsed = urllib.parse.urlparse(url)
+        if 'instagram.com' in parsed.netloc:
+            # Mantém apenas o caminho para o Instagram, ignorando a querystring (onde ficam igsh, etc.)
+            return urllib.parse.urlunparse((parsed.scheme, parsed.netloc, parsed.path, parsed.params, '', parsed.fragment))
+        # Para outras plataformas, podemos deixar a query intacta ou filtrar parâmetros específicos no futuro
+        return url
+    except Exception:
+        return url
+
 def baixar_video(url, options):
+    url = limpar_url(url)
     print(f"\nIniciando processo para: {url}")
+
     
     ydl_opts = {
         'outtmpl': os.path.join(options.path, '%(title)s.%(ext)s'),

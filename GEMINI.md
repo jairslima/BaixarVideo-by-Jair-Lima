@@ -31,3 +31,4 @@ Opções avançadas:
 ## Observações Adicionais
 - Este repositório foi configurado como **PÚBLICO** no GitHub mediante solicitação explícita do usuário, constituindo uma exceção à regra geral de repositórios privados.
 - O uso de wrappers no PowerShell para utilitários CLI segue a recomendação de chamar diretamente os executáveis nativos.
+- **Tratamento de URLs**: O script agora possui uma função dedicada (`limpar_url`) para remover automaticamente parâmetros de rastreamento e *querystrings* de plataformas como o Instagram (`igsh`, etc.). Isso previne falhas no `yt-dlp` causadas por URLs poluídas.
