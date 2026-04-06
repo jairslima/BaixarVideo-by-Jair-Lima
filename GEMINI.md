@@ -5,15 +5,22 @@ Este projeto é um aplicativo CLI (Command Line Interface) desenvolvido em Pytho
 ## Dependências
 - Python 3
 - `yt-dlp`: Biblioteca robusta para extração e download de vídeos, lidando de forma transparente com dezenas de plataformas.
+- `ffmpeg`: Necessário para converter áudios e mesclar os melhores formatos de vídeo/áudio (O caminho para o binário já está pré-configurado internamente para `C:\Users\jairs\Claude\AlbumSplitter`).
 
 ## Como usar
 O aplicativo pode ser executado através dos scripts `baixarvideo.bat` (Prompt de Comando) ou `baixarvideo.ps1` (PowerShell) na raiz do projeto.
 Basta passar o link do vídeo como parâmetro.
 
-Exemplo de uso:
+Exemplo de uso básico:
 ```powershell
-.\baixarvideo.ps1 "https://www.facebook.com/watch/live/?ref=watch_permalink&v=3456440387848421&rdid=qwv64bhcBPcvoSfT"
+.\baixarvideo.ps1 "https://www.youtube.com/watch?v=..."
 ```
+
+Opções avançadas:
+- `--best`: Baixa e mescla a melhor qualidade de vídeo e áudio disponível (geralmente 1080p+).
+- `--audio` ou `-a`: Extrai o áudio e salva em MP3.
+- `--path "C:\Caminho"` ou `-p`: Define uma pasta customizada para salvar o arquivo.
+- `--playlist`: Permite o download de playlists inteiras (por padrão apenas o vídeo especificado é baixado).
 
 ## Estrutura do Projeto
 - `baixarvideo.py`: Script principal contendo a lógica de configuração e download via `yt-dlp`.

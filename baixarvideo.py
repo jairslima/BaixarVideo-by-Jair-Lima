@@ -1,23 +1,79 @@
 import sys
+import argparse
+import os
 import yt_dlp
 
-def baixar_video(url):
+def baixar_video(url, options):
+    print(f"\nIniciando processo para: {url}")
+    
     ydl_opts = {
-        'outtmpl': '%(title)s.%(ext)s',
-        'format': 'best',
+        'outtmpl': os.path.join(options.path, '%(title)s.%(ext)s'),
+        'noplaylist': not options.playlist,
+        'ffmpeg_location': r'C:\Users\jairs\Claude\AlbumSplitter',
     }
+
+    if options.audio:
+        ydl_opts['format'] = 'bestaudio/best'
+        ydl_opts['postprocessors'] = [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '192',
+        }]
+        print("Modo: Apenas Áudio (MP3)")
+    elif options.best:
+        ydl_opts['format'] = 'bestvideo+bestaudio/best'
+        ydl_opts['merge_output_format'] = 'mkv'
+        print("Modo: Melhor Qualidade (Vídeo + Áudio mesclados)")
+    else:
+        ydl_opts['format'] = 'best'
+        print("Modo: Qualidade Padrão (Melhor arquivo único)")
+
+    if not options.playlist:
+        print("Modo Playlist: Desativado (Apenas vídeo único)")
+    else:
+        print("Modo Playlist: Ativado")
+
+    print(f"Destino: {os.path.abspath(options.path)}\n")
+
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            print("Obtendo informações do vídeo...")
+            # Extrai as informações sem baixar apenas para mostrar o título ao usuário
+            info_dict = ydl.extract_info(url, download=False)
+            if info_dict:
+                titulo = info_dict.get('title', 'Desconhecido')
+                print(f"Título: {titulo}\n")
+            
+            # Executa o download e mostra a barra de progresso nativa do yt-dlp
             ydl.download([url])
-            print("\nDownload concluído com sucesso!")
+            print("\n✅ Processo finalizado com sucesso!")
+            
     except Exception as e:
-        print(f"\nOcorreu um erro ao tentar baixar o vídeo: {e}")
+        print(f"\n❌ Ocorreu um erro durante o processo: {e}")
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Uso: baixarvideo <URL>")
-        sys.exit(1)
+    parser = argparse.ArgumentParser(description="Ferramenta para baixar vídeos e áudios usando yt-dlp.")
     
-    url = sys.argv[1]
-    print(f"Iniciando o download de: {url}")
-    baixar_video(url)
+    parser.add_argument("url", help="A URL do vídeo ou playlist a ser baixado")
+    parser.add_argument("--best", action="store_true", help="Baixar na melhor qualidade possível combinando vídeo e áudio (requer FFmpeg)")
+    parser.add_argument("--audio", "-a", action="store_true", help="Baixar apenas o áudio e converter para MP3 (requer FFmpeg)")
+    parser.add_argument("--path", "-p", default=".", help="Pasta de destino para o download (padrão: pasta atual)")
+    parser.add_argument("--playlist", action="store_true", help="Permitir o download de playlists completas")
+
+    # Tratamento caso o usuário chame sem argumentos (mostra help)
+    if len(sys.argv) == 1:
+        parser.print_help(sys.stderr)
+        sys.exit(1)
+
+    args = parser.parse_args()
+
+    # Tenta criar a pasta de destino caso ela não exista
+    if not os.path.exists(args.path):
+        try:
+            os.makedirs(args.path)
+            print(f"Pasta de destino criada: {os.path.abspath(args.path)}")
+        except OSError as e:
+            print(f"Erro ao criar pasta de destino: {e}")
+            sys.exit(1)
+
+    baixar_video(args.url, args)
