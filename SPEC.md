@@ -92,3 +92,14 @@ Abrir a interface pelo terminal:
 ```powershell
 baixarvideo-gui
 ```
+
+## Fechamento da sessao 2026-04-29
+- Interface grafica implementada em `baixarvideo_gui.py`.
+- Executavel grafico validado em `C:\Users\jairs\Gemini\BaixarVideo\dist\BaixarVideo by Jair Lima\BaixarVideo by Jair Lima.exe`.
+- Atalho da Area de Trabalho validado em `C:\Users\jairs\Desktop\BaixarVideo by Jair Lima.lnk`.
+- Comando de terminal validado no `PATH`: `C:\Users\jairs\bin\baixarvideo.cmd`.
+- Comando grafico validado no `PATH`: `C:\Users\jairs\bin\baixarvideo-gui.cmd`.
+- CLI validado com `baixarvideo --help`, incluindo `--cookies-browser`.
+- Build gerado com PyInstaller e mantido localmente em `dist/`, ignorado pelo Git.
+- Artefatos locais ignorados: `venv/`, `build/`, `dist/`, caches, midias baixadas e `.spec` gerado pelo PyInstaller.
+- Commit funcional publicado antes deste fechamento: `62ecab9 feat: adiciona interface grafica e suporte a cookies`.
